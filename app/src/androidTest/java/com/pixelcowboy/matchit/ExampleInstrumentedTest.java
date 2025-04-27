@@ -1,4 +1,4 @@
-package com.pixelcowboy.matchup;
+package com.pixelcowboy.matchit;
 
 import android.content.Context;
 

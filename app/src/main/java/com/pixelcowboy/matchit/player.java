@@ -1,5 +1,6 @@
-package com.pixelcowboy.matchup;
+package com.pixelcowboy.matchit;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.drawable.Drawable;
@@ -31,35 +32,46 @@ public class player extends AppCompatActivity {
     Drawable ico;
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        //INITIALIZE
+        if(cards.size() == 0){
+            try {
+                cards.add(new JSONObject()
+                        .put("img", "file:///android_asset/img/1.jpg")
+                        .put("id", "jordan"));
+                cards.add(new JSONObject()
+                        .put("img", "file:///android_asset/img/1.jpg")
+                        .put("id", "jordan"));
+                cards.add(new JSONObject()
+                        .put("img", "file:///android_asset/img/2.jpg")
+                        .put("id", "nike"));
+                cards.add(new JSONObject()
+                        .put("img", "file:///android_asset/img/2.jpg")
+                        .put("id", "nike"));
+                cards.add(new JSONObject()
+                        .put("img", "file:///android_asset/img/3.jpg")
+                        .put("id", "addidas"));
+                cards.add(new JSONObject()
+                        .put("img", "file:///android_asset/img/3.jpg")
+                        .put("id", "addidas"));
+
+            } catch (Exception ex) {
+                Log.e("jsonErr", ex.getMessage());
+            }
+
+            Collections.shuffle(cards);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
-        try {
-            cards.add(new JSONObject()
-                    .put("img", "file:///android_asset/chr/1.png")
-                    .put("id", "bubba"));
-            cards.add(new JSONObject()
-                    .put("img", "file:///android_asset/chr/1.png")
-                    .put("id", "bubba"));
-            cards.add(new JSONObject()
-                    .put("img", "file:///android_asset/chr/2.png")
-                    .put("id", "olek"));
-            cards.add(new JSONObject()
-                    .put("img", "file:///android_asset/chr/2.png")
-                    .put("id", "olek"));
-            cards.add(new JSONObject()
-                    .put("img", "file:///android_asset/chr/3.png")
-                    .put("id", "puffy"));
-            cards.add(new JSONObject()
-                    .put("img", "file:///android_asset/chr/3.png")
-                    .put("id", "puffy"));
-
-        } catch (Exception ex) {
-            Log.e("jsonErr", ex.getMessage());
-        }
-
-        Collections.shuffle(cards);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
 
         imgBtn1 = findViewById(R.id.imgBtn1);
         imgBtn2 = findViewById(R.id.imgBtn2);
@@ -68,7 +80,7 @@ public class player extends AppCompatActivity {
         imgBtn5 = findViewById(R.id.imgBtn5);
         imgBtn6 = findViewById(R.id.imgBtn6);
 
-        ico = getApplicationContext().getDrawable(R.drawable.ic_unknown);
+        ico = getApplicationContext().getDrawable(R.drawable.baseline_question_mark_24);
 
         imgBtn1.setImageDrawable(ico);
         imgBtn2.setImageDrawable(ico);
@@ -78,7 +90,7 @@ public class player extends AppCompatActivity {
         imgBtn6.setImageDrawable(ico);
     }
 
-    public void revealValue(int index){
+    public void revealCard(int index){
         try{
             JSONObject j = cards.get(index);
 
@@ -107,19 +119,15 @@ public class player extends AppCompatActivity {
     }
 
     public void addSelection(int index) {
-        Log.d("TARGET", String.valueOf(index) + selectedIndex[0] + "," + selectedIndex[1]);
-
         if (selectedIndex[0] == -1) {
             selectedIndex[0] = index;
-            revealValue(index);
-            Log.d("DEBUG", "ADD INDEX 1:" + index);
+            revealCard(index);
             return;
         }
 
         if (selectedIndex[1] == -1) {
             selectedIndex[1] = index;
-            revealValue(index);
-            Log.d("DEBUG", "ADD INDEX 2:" + index);
+            revealCard(index);
         }
 
         try {
@@ -135,7 +143,6 @@ public class player extends AppCompatActivity {
                         resetCard(selectedIndex[1]);
                         selectedIndex = new int[]{-1, -1};
                         enableAllButtons();
-                        Log.d("DEBUG", "Trigger Reset");
                     }, 1000);
 
                     return;
@@ -144,13 +151,12 @@ public class player extends AppCompatActivity {
                 guessed.add(j1.getString("id"));
                 selectedIndex = new int[]{-1, -1};
                 enableAllButtons();
-                Log.d("DEBUG", "Trigger Reveal");
             }
 
 
             //Check if all cards are guessed
             if(guessed.size() >= 3){
-                Toast.makeText(getApplicationContext(), "You have match all cards!!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Congrats you have match all cards", Toast.LENGTH_LONG).show();
             }
         } catch (Exception ex) {
             Log.e("onSelect", ex.getMessage());

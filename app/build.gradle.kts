@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.pixelcowboy.matchup"
+    namespace = "com.pixelcowboy.matchit"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.pixelcowboy.matchup"
+        applicationId = "com.pixelcowboy.matchit"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
